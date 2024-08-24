@@ -1,0 +1,15 @@
+app:
+  port: 80
+  env: local
+
+migration:
+  dir: ./migration
+
+db:
+  host: communication-center-crm-db
+  port: 5432
+  user: developer
+  password: developer
+  dbname: study_db
+  schema: public
+  ssl_mode: disable

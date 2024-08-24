@@ -11,6 +11,7 @@ import (
 
 type App struct {
 	Port string `yaml:"port"`
+	Env  string `yaml:"env"`
 }
 
 type Redis struct {
@@ -37,18 +38,20 @@ type config struct {
 	Redis `yaml:"redis"`
 }
 
-func getInstance() (cf config) {
+var once sync.Once
+
+func Get() (cf *config) {
 	var instance *config = nil
-	sync.Once.Do(func() {
-		cPath := os.Args[1]
-		cf.LoadConfig(cPath)
-		instance = new(Config)
+	once.Do(func() {
+		cPath := os.Getenv("CONFIG_PATH")
+		cf.loadConfig(cPath)
+		instance = new(config)
 	})
 	return instance
 }
 
-func (cg *config) LoadConfig(patch string) {
-	file, err := os.Open(patch)
+func (cg *config) loadConfig(path string) {
+	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal("ReadConfigFile: ", err)
 	}
