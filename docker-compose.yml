@@ -1,0 +1,26 @@
+services:
+    postgres-study:
+        image: postgres:15.2
+        container_name: ${COMPOSE_PROJECT_NAME}-db
+        environment:
+            - POSTGRES_DB=${POSTGRES_DB}
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        ports:
+            - ${POSTGRES_PORT}:5432
+        networks:
+            - default
+    app-study:
+        container_name: ${COMPOSE_PROJECT_NAME}-app
+        build:
+            context: .
+            dockerfile: ./docker/app/Dockerfile
+            target: service
+        volumes:
+            - ./:/app:delegated
+        environment:
+            - GOPATH=/app/src
+        ports:
+            - ${APP_PORT:-80}:80
+        networks:
+            - default
